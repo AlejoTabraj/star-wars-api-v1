@@ -5,7 +5,7 @@ import {
   WinstonModuleOptions,
   WinstonModuleOptionsFactory,
 } from 'nest-winston';
-import * as WinstonCloudWatch from 'winston-cloudwatch';
+import WinstonCloudwatch, * as WinstonCloudWatch from 'winston-cloudwatch';
 import { LEVEL_LOGS } from './constants/app.constants';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class WinstonConfigService implements WinstonModuleOptionsFactory {
       transportsList = [new transports.File({ filename: logStreamName })];
     } else {
       transportsList = [
-        new WinstonCloudWatch({
+        new WinstonCloudwatch({
           logGroupName: logGroupName,
           logStreamName: logStreamName,
           awsRegion: this.configService.get<string>('AWS_REGION'),
