@@ -5,7 +5,7 @@ import {
   WinstonModuleOptions,
   WinstonModuleOptionsFactory,
 } from 'nest-winston';
-import WinstonCloudwatch, * as WinstonCloudWatch from 'winston-cloudwatch';
+import  WinstonCloudwatch  from 'winston-cloudwatch';
 import { LEVEL_LOGS } from './constants/app.constants';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class WinstonConfigService implements WinstonModuleOptionsFactory {
           level: 'error',
           messageFormatter: (logObject) => JSON.stringify(logObject),
         }),
-        new WinstonCloudWatch({
+        new WinstonCloudwatch({
           logGroupName: logGroupName,
           logStreamName: `timeRes-${logStreamName.split('-')[1]}`,
           awsRegion: this.configService.get<string>('AWS_REGION'),
@@ -60,7 +60,7 @@ export class WinstonConfigService implements WinstonModuleOptionsFactory {
           level: 'info',
           messageFormatter: (logObject) => JSON.stringify(logObject),
         }),
-        new WinstonCloudWatch({
+        new WinstonCloudwatch({
           logGroupName: logGroupName,
           logStreamName: `audit-${logStreamName.split('-')[1]}`,
           awsRegion: this.configService.get<string>('AWS_REGION'),
@@ -86,7 +86,7 @@ export class WinstonConfigService implements WinstonModuleOptionsFactory {
       ];
     } else {
       exceptionTransportList = [
-        new WinstonCloudWatch({
+        new WinstonCloudwatch({
           logGroupName: logGroupName,
           logStreamName: logStreamName,
           awsRegion: this.configService.get<string>('AWS_REGION'),
