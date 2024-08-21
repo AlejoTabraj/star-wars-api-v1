@@ -21,7 +21,7 @@ export class PeopleService {
     if (name) { match.name = { $regex: name, $options: "i" }}
 
     try {
-      const totalCount = await this.personModel.countDocuments().exec();
+      const totalCount = await this.personModel.countDocuments(match).exec();
       const documents = await this.personModel
         .find(match)
         .skip(skip)

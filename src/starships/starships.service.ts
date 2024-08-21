@@ -20,7 +20,7 @@ export class StarshipsService {
     const match: MatchQuery = {};
     if (name) { match.name = { $regex: name, $options: "i" }};
     try {
-      const totalCount = await this.starshipModel.countDocuments().exec();
+      const totalCount = await this.starshipModel.countDocuments(match).exec();
       const documents = await this.starshipModel
         .find(match)
         .skip(skip)

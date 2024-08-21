@@ -20,7 +20,7 @@ export class PlanetsService {
     const match: MatchQuery = {};
     if (name) { match.name = { $regex: name, $options: "i" }};
     try {
-      const totalCount = await this.planetModel.countDocuments().exec();
+      const totalCount = await this.planetModel.countDocuments(match).exec();
       const documents = await this.planetModel
         .find(match)
         .skip(skip)

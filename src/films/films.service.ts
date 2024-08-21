@@ -20,7 +20,7 @@ export class FilmsService {
     const match: MatchQuery = {};
     if (name) { match.name = { $regex: name, $options: "i" }}
     try {
-      const totalCount = await this.filmModel.countDocuments().exec();
+      const totalCount = await this.filmModel.countDocuments(match).exec();
       const documents = await this.filmModel
         .find(match)
         .skip(skip)
