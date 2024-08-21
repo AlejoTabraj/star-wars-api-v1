@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { StarshipsService } from './starships.service';
-import { QueryDto } from 'src/common/dto/paginated.dto';
+import { QueryDto } from '../common/dto/paginated.dto';
 
 @Controller('starships')
 export class StarshipsController {

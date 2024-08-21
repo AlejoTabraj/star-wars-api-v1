@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { FilmsService } from './films.service';
-import { QueryDto } from 'src/common/dto/paginated.dto';
+import { QueryDto } from '../common/dto/paginated.dto';
 @Controller('films')
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) { }

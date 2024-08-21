@@ -6,7 +6,7 @@ import { MatchQuery } from '../common/interfaces/pagination.interface';
 import { STAR_WARS_CATEGORY } from '../common/constants/app.constants';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { QueryDto } from 'src/common/dto/paginated.dto';
+import { QueryDto } from '../common/dto/paginated.dto';
 
 @Injectable()
 export class PlanetsService {
