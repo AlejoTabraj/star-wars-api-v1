@@ -2,10 +2,11 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Person } from './schemas/person.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { FindPaginated } from '../common/interfaces/pagination.interface';
+import { MatchQuery } from '../common/interfaces/pagination.interface';
 import { STAR_WARS_CATEGORY } from '../common/constants/app.constants';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { QueryDto } from 'src/common/dto/paginated.dto';
 
 @Injectable()
 export class PeopleService {
@@ -14,13 +15,15 @@ export class PeopleService {
     @InjectModel(Person.name) private readonly personModel: Model<Person>
   ) { }
 
-  async findPaginated({ page, pageSize }: FindPaginated): Promise<{ documents: Person[], totalPages: number }> {
+  async findPaginated({ page, pageSize, name }: QueryDto): Promise<{ documents: Person[], totalPages: number }> {
     const skip = (page - 1) * pageSize;
+    const match: MatchQuery = {};
+    if (name) { match.name = { $regex: name, $options: "i" }}
 
     try {
       const totalCount = await this.personModel.countDocuments().exec();
       const documents = await this.personModel
-        .find()
+        .find(match)
         .skip(skip)
         .limit(pageSize)
         .exec();

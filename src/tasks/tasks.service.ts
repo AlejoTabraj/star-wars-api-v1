@@ -9,10 +9,10 @@ import { catchError, EMPTY, expand, map, Observable, of, reduce } from 'rxjs';
 import { ENTITY_NAMES, STAR_WARS_CATEGORY } from '../common/constants/app.constants';
 import { Film } from '../films/schemas/film.schema';
 import { Person } from '../people/schemas/person.schema';
-import { PlanetDto } from '../planets/dto/planet.dto';
 import { Planet } from '../planets/schemas/planet.schema';
 import { Starship } from '../starships/schemas/starship.schema';
 import { Logger } from 'winston';
+import { StarWarsEntity } from '../common/interfaces/pagination.interface';
 
 @Injectable()
 export class TasksService {
@@ -55,71 +55,70 @@ export class TasksService {
     }
   }
 
-  getEntity(model, name): any {
+  getEntity(model: Model<any>, name: string): void {
     const responseFetch = this.fetchBatch(this.baseUrl + name).pipe(
-      expand((response) => {
-        if (response.nextBatchUrl) {
-          return this.fetchBatch(response.nextBatchUrl);
-        } else {
-          return EMPTY;
-        }
-      }),
-      map((response) => {
-        return response.results
-      }),
+      expand((response) => response.nextBatchUrl ? this.fetchBatch(response.nextBatchUrl) : EMPTY),
+      map((response) => response.results),
       catchError((error) => {
         this.logger
-        .child({
-          class: TasksService.name,
-          method: this.getEntity.name,
-          info: 'Ocurrió un error en esta llamada',
-        })
-        .error(error.message);
+          .child({
+            class: TasksService.name,
+            method: this.getEntity.name,
+            info: 'Error in pipe Upsert',
+          })
+          .error(error.message);
         return of([]);
       }),
       reduce((acc, data) => acc.concat(data), [])
     );
-
+  
     responseFetch.subscribe({
       next: (result) => {
-        result && this.upsertRecords(model, result)
+        if (result.length) {
+          this.upsertRecords(model, result);
+        }
       },
       error: (error) => {
         this.logger
-        .child({
-          class: TasksService.name,
-          method: this.getEntity.name,
-          info: 'Ocurrió un error en esta llamada',
-        })
-        .error(error.message);
+          .child({
+            class: TasksService.name,
+            method: this.getEntity.name,
+            info: 'Upsert falied',
+          })
+          .error(error.message);
       },
       complete: () => {
-        console.log('Operación completada');
+        this.logger
+          .child({
+            class: TasksService.name,
+            method: this.getEntity.name,
+            info: 'Upsert completed',
+          })
+          .info('Upsert completed');
       }
     });
   }
 
   fetchBatch(url: string): Observable<{
-    results: any; data: any, nextBatchUrl?: string
+    results: Model<any>[], nextBatchUrl: string | null
   }> {
     return this.http.get(url).pipe(
       map((response) => {
         const data = response.data
         const { next: nextBatchUrl, results } = data;
-        console.log({ results })
-        return { data, nextBatchUrl, results };
+        return { nextBatchUrl, results };
       })
     );
   }
 
-  async upsertRecords(model, records: PlanetDto[]): Promise<void> {
+  async upsertRecords(model: Model<any>, records: StarWarsEntity[]): Promise<void> {
     for (const record of records) {
       const existingRecord = await model.findOne({ url: record.url }, { _id: true }).exec();
       const data = this.convertKeysToCamelCase(record)
       if (existingRecord) {
         if (existingRecord.edited < record.edited) {
           await model.updateOne(
-            { _id: record._id },
+            { _id: existingRecord._id },
             { $set: data },
           ).exec();
         }

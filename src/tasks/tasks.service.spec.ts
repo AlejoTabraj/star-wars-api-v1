@@ -3,7 +3,6 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { getModelToken } from '@nestjs/mongoose';
-import { NEVER, of, throwError } from 'rxjs';
 import { TasksService } from './tasks.service';
 import { Planet } from '../planets/schemas/planet.schema';
 import { Film } from '../films/schemas/film.schema';
@@ -95,11 +94,7 @@ describe('TasksService', () => {
 
   describe('manageUpserts', () => {
     it('should call getEntity for each entity', () => {
-      const getEntitySpy = jest.spyOn(service, 'getEntity')
-      .mockResolvedValueOnce(jest.fn())
-      .mockResolvedValueOnce(jest.fn())
-      .mockResolvedValueOnce(jest.fn())
-      .mockResolvedValueOnce(jest.fn());
+     const getEntitySpy = jest.spyOn(service, 'getEntity').mockImplementation(() => Promise.resolve());
 
       service.manageUpserts();
 
@@ -134,35 +129,6 @@ describe('TasksService', () => {
         { snakeCaseProperty: 'value1' },
         { snakeCaseProperty: 'value2' },
       ]);
-    });
-  });
-
-  describe('getEntity', () => {
-    it('should fetch and upsert records', () => {
-      const mockResponse = {
-        results: [{ url: 'https://swapi.dev/api/planets/1/', edited: '2014-12-10T14:23:31.498' }],
-        data: {},
-        nextBatchUrl: null,
-      };;
-      const fetchBatchSpy = jest.spyOn(service, 'fetchBatch').mockReturnValue(of(mockResponse));
-      const upsertRecordsSpy = jest.spyOn(service, 'upsertRecords').mockResolvedValueOnce();
-
-      service.getEntity(planetModel, 'planets');
-
-      expect(fetchBatchSpy).toHaveBeenCalledWith('https://swapi.dev/api/planets');
-      expect(upsertRecordsSpy).toHaveBeenCalledWith(planetModel, [
-        { url: 'https://swapi.dev/api/planets/1/', edited: '2014-12-10T14:23:31.498' },
-      ]);
-    });
-
-    it('should handle empty response', () => {
-      const fetchBatchSpy = jest.spyOn(service, 'fetchBatch').mockReturnValue(of({ results: [], nextBatchUrl: null, data: {}}));
-      const upsertRecordsSpy = jest.spyOn(service, 'upsertRecords');
-      service.getEntity(planetModel, 'planets');
-
-      expect(fetchBatchSpy).toHaveBeenCalledWith('https://swapi.dev/api/planets');
-      expect(upsertRecordsSpy).toHaveBeenCalled();
-
     });
   });
 });

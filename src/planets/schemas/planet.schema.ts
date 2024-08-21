@@ -5,6 +5,7 @@ export type PlanetDocument = Planet & Document;
 
 @Schema()
 export class Planet {
+  
   @Prop({ required: true })
   name: string;
 

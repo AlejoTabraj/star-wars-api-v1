@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { PeopleService } from './people.service';
-import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
+import { QueryDto } from 'src/common/dto/paginated.dto';
 
 @Controller('people')
 export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
 
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true}))
   findPaginated(
-    @Query() query: any
+    @Query() query: QueryDto
   ) {
     return this.peopleService.findPaginated(query);
   }

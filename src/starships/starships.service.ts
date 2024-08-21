@@ -2,10 +2,11 @@ import { BadRequestException, Inject, Injectable, NotFoundException } from '@nes
 import { InjectModel } from '@nestjs/mongoose';
 import { Starship } from './schemas/starship.schema';
 import { Model, Types } from 'mongoose';
-import { FindPaginated } from '../common/interfaces/pagination.interface';
+import { MatchQuery } from '../common/interfaces/pagination.interface';
 import { STAR_WARS_CATEGORY } from '../common/constants/app.constants';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { QueryDto } from 'src/common/dto/paginated.dto';
 
 @Injectable()
 export class StarshipsService {
@@ -14,13 +15,14 @@ export class StarshipsService {
     @InjectModel(Starship.name) private readonly starshipModel: Model<Starship>
   ) { }
 
-  async findPaginated({ page, pageSize }: FindPaginated): Promise<{ documents: Starship[], totalPages: number }> {
+  async findPaginated({ page, pageSize, name }: QueryDto): Promise<{ documents: Starship[], totalPages: number }> {
     const skip = (page - 1) * pageSize;
-
+    const match: MatchQuery = {};
+    if (name) { match.name = { $regex: name, $options: "i" }};
     try {
       const totalCount = await this.starshipModel.countDocuments().exec();
       const documents = await this.starshipModel
-        .find()
+        .find(match)
         .skip(skip)
         .limit(pageSize)
         .exec();

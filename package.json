@@ -30,6 +30,8 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.1.0",
     "axios": "^1.7.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "mongoose": "^8.5.3",
     "nest-winston": "^1.9.7",
     "reflect-metadata": "^0.2.0",
