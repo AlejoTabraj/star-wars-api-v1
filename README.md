@@ -1,73 +1,41 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# NestJS STAR WARS API MONGODB
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a NestJS application designed to handle logging, database updates via a cron job, and API services that provide information from the Star Wars API.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Project Overview
 
-## Description
+### 1. Logging with Winston
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The application implements a logging system using Winston, a powerful and flexible logging library for Node.js applications. The key features include:
 
-## Installation
+- **Log Management**: Logs are categorized by severity levels (e.g., `fatal`, `error`, `warn`, `info`, `debug`, `trace`).
+- **Multiple Outputs**: Logs can be directed to various outputs, including the console and log files.
+- **CloudWatch Integration**: Logs are configured to integrate with AWS CloudWatch, facilitating monitoring and debugging.
 
-```bash
-$ npm install
-```
+### 2. Scheduled Database Updates
 
-## Running the app
+A cron job is configured to periodically update the database with the latest data from the Star Wars API. This ensures that the application always serves the most current information. The cron job performs the following tasks:
 
-```bash
-# development
-$ npm run start
+- **Data Fetching**: Regularly retrieves data from the Star Wars API.
+- **Database Synchronization**: Updates the database with any new or changed information.
 
-# watch mode
-$ npm run start:dev
+### 3. Exposing Star Wars Data through API Services
 
-# production mode
-$ npm run start:prod
-```
+The application provides a set of RESTful API services that expose Star Wars related data. These services interact with the database to deliver real-time information about characters, planets, starships, and films.
 
-## Test
+## Installation and Setup
 
-```bash
-# unit tests
-$ npm run test
+To get the project up and running locally, follow these steps:
 
-# e2e tests
-$ npm run test:e2e
+1. **Clone the Repository**: 
+   ```bash
+   git clone https://github.com/AlejoTabraj/star-wars-api-v1
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+2. **Install dependecies**: 
+    ```bash
+    npm i
+3. **Add environment variables**: 
+    Example in .env.test
+4. **Run the Application**: 
+    ```bash
+    npm run start:dev
